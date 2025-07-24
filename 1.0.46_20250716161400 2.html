@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wingo Predictor</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      border: 2px solid #00ff00;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1em;
+      background: #000;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+    }
+    .timer {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Wingo Predictor</h2>
+    <div class="timer" id="timer">00:30</div>
+    <div>
+      <button onclick="setMode(30)">30SEC</button>
+      <button onclick="setMode(60)">1MIN</button>
+      <button onclick="setMode(180)">3MIN</button>
+    </div>
+    <input type="text" id="digits" placeholder="Enter last 3 digits" maxlength="3" />
+    <div>
+      <button onclick="generatePrediction()">Generate Prediction</button>
+      <button onclick="reset()">Reset</button>
+    </div>
+    <div id="prediction"></div>
+  </div>
+
+  <script>
+    let countdown = 30;
+    let interval;
+
+    function setMode(seconds) {
+      countdown = seconds;
+      clearInterval(interval);
+      startTimer();
+    }
+
+    function startTimer() {
+      let time = countdown;
+      document.getElementById("timer").textContent = formatTime(time);
+      interval = setInterval(() => {
+        time--;
+        document.getElementById("timer").textContent = formatTime(time);
+        if (time <= 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+
+    function formatTime(s) {
+      return "00:" + (s < 10 ? "0" + s : s);
+    }
+
+    function generatePrediction() {
+      const digits = document.getElementById("digits").value;
+      if (!digits.match(/^\d{3}$/)) {
+        alert("Please enter exactly 3 digits");
+        return;
+      }
+      const colors = ["Red", "Green", "Violet"];
+      const prediction = colors[Math.floor(Math.random() * colors.length)];
+      document.getElementById("prediction").textContent = "Prediction: " + prediction;
+    }
+
+    function reset() {
+      document.getElementById("digits").value = "";
+      document.getElementById("prediction").textContent = "";
+      clearInterval(interval);
+      startTimer();
+    }
+
+    // Start default 30sec timer on load
+    startTimer();
+  </script>
+</body>
+</html>
